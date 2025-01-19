@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
-    "@table-library/react-table-library": "^4.1.7",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0"

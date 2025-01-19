@@ -17,7 +17,6 @@ export default function Home() {
           <a href="https://cmpmos.ru/naseleniyu/vaktsinatsiya-detey-i-vzroslyh-v-tsmp/natsionalnyy-kalendar-privivok/">
             Национальный календарь прививок
           </a>
-          kjk
         </h1>
 
         <Calendar />

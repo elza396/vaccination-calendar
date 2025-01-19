@@ -1,39 +1,96 @@
-import { CompactTable } from "@table-library/react-table-library/compact";
 import React from "react";
+import s from "../Calendar/Calendar.module.css";
 
 export const Calendar = () => {
-  const nodes = [
+  const infections = [
     {
-      id: "0",
-      name: "Shopping List",
-      deadline: new Date(2020, 1, 15),
-      type: "TASK",
-      isComplete: true,
-
-      nodes: 3,
+      id: "tub",
+      name: "Туберкулез",
+      vaccines: ["bcj", "bcjM"],
+      defaultVaccine: "bcj",
+      isNational: true,
+      routeOfAdministration: "subcutaneously",
+      isVirus: false,
+      isAlive: true,
+    },
+  ];
+  const vaccines = [
+    {
+      id: "bcj",
+      name: "БЦЖ",
+      infections: ["tub"],
+      routeOfAdministration: "subcutaneously",
+      sheme: {
+        numOfVaccination: 1,
+        ageOfVaccination: 0,
+        hasRevaccination: true,
+        ageOfRevaccination: 72,
+        vaccinationInterval: [],
+        revaccinationInterval: [],
+      },
     },
   ];
 
-  const COLUMNS = [
-    { label: "Task", renderCell: (item) => item.name },
-    {
-      label: "Deadline",
-      renderCell: (item) =>
-        item.deadline.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }),
-    },
-    { label: "Type", renderCell: (item) => item.type },
-    {
-      label: "Complete",
-      renderCell: (item) => item.isComplete.toString(),
-    },
-    { label: "Tasks", renderCell: (item) => item.nodes },
-  ];
+  const ages = [0, 1, 2, 3, 4.5, 6, 12, 15, 18, 20, 72, 84, 144, 168, 180];
 
-  const data = { nodes };
-
-  return <CompactTable columns={COLUMNS} data={data} />;
+  return (
+    <table className={s.table}>
+      <tbody>
+        <tr>
+          <th rowSpan={2}>Инфекция</th>
+          <th colSpan={10}>Месяцы</th>
+          <th colSpan={5}>Годы</th>
+        </tr>
+        <tr>
+          <th>0</th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4,5</th>
+          <th>6</th>
+          <th>12</th>
+          <th>15</th>
+          <th>18</th>
+          <th>20</th>
+          <th>6</th>
+          <th>7</th>
+          <th>12</th>
+          <th>14</th>
+          <th>15-17</th>
+        </tr>
+        {infections.map((inf) => {
+          return (
+            <tr key={inf.id}>
+              <th>{inf.name}</th>
+              {ages.map((age) => {
+                if (
+                  age ===
+                  vaccines.find((vac) => vac.id === inf.defaultVaccine).sheme
+                    .ageOfVaccination
+                ) {
+                  return (
+                    <th key={age} className={s.vaccine}>
+                      V
+                    </th>
+                  );
+                } else if (
+                  age ===
+                  vaccines.find((vac) => vac.id === inf.defaultVaccine).sheme
+                    .ageOfRevaccination
+                ) {
+                  return (
+                    <th key={age} className={s.revaccine}>
+                      RV
+                    </th>
+                  );
+                } else {
+                  return <th key={age}></th>;
+                }
+              })}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
 };
