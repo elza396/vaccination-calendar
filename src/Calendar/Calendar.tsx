@@ -1,25 +1,26 @@
 import React from "react";
 import s from "../Calendar/Calendar.module.css";
+import { ERouteOfAdministration, Infection, Vaccine } from "../types";
 
 export const Calendar = () => {
-  const infections = [
+  const infections: [Infection] = [
     {
       id: "tub",
       name: "Туберкулез",
       vaccines: ["bcj", "bcjM"],
       defaultVaccine: "bcj",
       isNational: true,
-      routeOfAdministration: "subcutaneously",
+      routeOfAdministration: ERouteOfAdministration.SUBCUTANEOUSLY,
       isVirus: false,
       isAlive: true,
     },
   ];
-  const vaccines = [
+  const vaccines: [Vaccine] = [
     {
       id: "bcj",
       name: "БЦЖ",
       infections: ["tub"],
-      routeOfAdministration: "subcutaneously",
+      routeOfAdministration: ERouteOfAdministration.SUBCUTANEOUSLY,
       sheme: {
         numOfVaccination: 1,
         ageOfVaccination: 0,
