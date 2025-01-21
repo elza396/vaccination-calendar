@@ -1,37 +1,9 @@
 import React from "react";
 import s from "../Calendar/Calendar.module.css";
-import { ERouteOfAdministration, Infection, Vaccine } from "../types";
+import { infections, vaccines } from "./data";
+import { getArrayOfAgesFromIntervals } from "../utils/getArrayOfAgesFromIntervals";
 
 export const Calendar = () => {
-  const infections: [Infection] = [
-    {
-      id: "tub",
-      name: "Туберкулез",
-      vaccines: ["bcj", "bcjM"],
-      defaultVaccine: "bcj",
-      isNational: true,
-      routeOfAdministration: ERouteOfAdministration.SUBCUTANEOUSLY,
-      isVirus: false,
-      isAlive: true,
-    },
-  ];
-  const vaccines: [Vaccine] = [
-    {
-      id: "bcj",
-      name: "БЦЖ",
-      infections: ["tub"],
-      routeOfAdministration: ERouteOfAdministration.SUBCUTANEOUSLY,
-      sheme: {
-        numOfVaccination: 1,
-        ageOfVaccination: 0,
-        hasRevaccination: true,
-        ageOfRevaccination: 72,
-        vaccinationInterval: [],
-        revaccinationInterval: [],
-      },
-    },
-  ];
-
   const ages = [0, 1, 2, 3, 4.5, 6, 12, 15, 18, 20, 72, 84, 144, 168, 180];
 
   return (
@@ -60,32 +32,55 @@ export const Calendar = () => {
           <th>15-17</th>
         </tr>
         {infections.map((inf) => {
+          const defVacSheme = vaccines.find(
+            (vac) => vac.id === inf.defaultVaccine
+          )?.sheme;
+
+          if (!defVacSheme) {
+            return null;
+          }
+
+          const agesForVac = getArrayOfAgesFromIntervals(
+            defVacSheme.vaccinationInterval,
+            defVacSheme.ageOfVaccination
+          );
+
+          const agesForRevac = defVacSheme.revaccinationInfo
+            ? getArrayOfAgesFromIntervals(
+                defVacSheme.revaccinationInfo.revaccinationInterval,
+                defVacSheme.revaccinationInfo.ageOfRevaccination
+              )
+            : [];
+
           return (
             <tr key={inf.id}>
               <th>{inf.name}</th>
-              {ages.map((age) => {
+              {ages.map((month, monthIndex) => {
                 if (
-                  age ===
-                  vaccines.find((vac) => vac.id === inf.defaultVaccine).sheme
-                    .ageOfVaccination
+                  agesForVac.some((vacAge) => {
+                    return (
+                      month >= vacAge &&
+                      (monthIndex === 0 ? true : ages[monthIndex - 1] < vacAge) // это надо исправить
+                    );
+                  })
                 ) {
                   return (
-                    <th key={age} className={s.vaccine}>
+                    <th key={month} className={s.vaccine}>
                       V
                     </th>
                   );
                 } else if (
-                  age ===
-                  vaccines.find((vac) => vac.id === inf.defaultVaccine).sheme
-                    .ageOfRevaccination
+                  agesForRevac.some((vacAge) => {
+                    return month >= vacAge && ages[monthIndex - 1] < vacAge;
+                  })
                 ) {
                   return (
-                    <th key={age} className={s.revaccine}>
+                    <th key={month} className={s.revaccine}>
                       RV
                     </th>
                   );
                 } else {
-                  return <th key={age}></th>;
+                  return <th key={month}></th>;
                 }
               })}
             </tr>

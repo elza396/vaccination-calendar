@@ -2,11 +2,22 @@ export type Infection = {
   id: string;
   name: string;
   vaccines: string[];
-  defaultVaccine: string;
+  defaultVaccine?: string;
   isNational: boolean;
   routeOfAdministration: ERouteOfAdministration;
   isVirus: boolean;
   isAlive: boolean;
+};
+
+export type RevaccinationInfo = {
+  ageOfRevaccination: number;
+  revaccinationInterval?: number[];
+};
+
+export type Sheme = {
+  ageOfVaccination: number;
+  vaccinationInterval?: number[];
+  revaccinationInfo?: RevaccinationInfo;
 };
 
 export type Vaccine = {
@@ -14,14 +25,7 @@ export type Vaccine = {
   name: string;
   infections: string[];
   routeOfAdministration: ERouteOfAdministration;
-  sheme: {
-    numOfVaccination: number;
-    ageOfVaccination: number;
-    hasRevaccination: boolean;
-    ageOfRevaccination: number;
-    vaccinationInterval: number[];
-    revaccinationInterval: number[];
-  };
+  sheme: Sheme;
 };
 
 export enum ERouteOfAdministration {
