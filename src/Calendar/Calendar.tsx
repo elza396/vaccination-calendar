@@ -4,7 +4,7 @@ import { infections, vaccines } from "./data";
 import { getArrayOfAgesFromIntervals } from "../utils/getArrayOfAgesFromIntervals";
 
 export const Calendar = () => {
-  const ages = [0, 1, 2, 3, 4.5, 6, 12, 15, 18, 20, 72, 84, 144, 168, 180];
+  const months = [0, 1, 2, 3, 4.5, 6, 12, 15, 18, 20, 72, 84, 144, 168, 180];
 
   return (
     <table className={s.table}>
@@ -52,36 +52,39 @@ export const Calendar = () => {
               )
             : [];
 
+          let vacNumber = 1,
+            revacNumber = 1;
+
+          const monthsArray: (string | null)[] = months.map(
+            (month, monthIndex) => {
+              if (
+                agesForVac.some((vacAge) => {
+                  return (
+                    month >= vacAge &&
+                    (monthIndex === 0 ? true : months[monthIndex - 1] < vacAge)
+                  );
+                })
+              ) {
+                return agesForVac.length > 1 ? `V${vacNumber++}` : "V";
+              } else if (
+                agesForRevac.some((revacAge) => {
+                  return month >= revacAge && months[monthIndex - 1] < revacAge;
+                })
+              ) {
+                return agesForRevac.length > 1 ? `RV${revacNumber++}` : "RV";
+              } else return null;
+            }
+          );
+
           return (
             <tr key={inf.id}>
               <th>{inf.name}</th>
-              {ages.map((month, monthIndex) => {
-                if (
-                  agesForVac.some((vacAge) => {
-                    return (
-                      month >= vacAge &&
-                      (monthIndex === 0 ? true : ages[monthIndex - 1] < vacAge) // это надо исправить
-                    );
-                  })
-                ) {
-                  return (
-                    <th key={month} className={s.vaccine}>
-                      V
-                    </th>
-                  );
-                } else if (
-                  agesForRevac.some((vacAge) => {
-                    return month >= vacAge && ages[monthIndex - 1] < vacAge;
-                  })
-                ) {
-                  return (
-                    <th key={month} className={s.revaccine}>
-                      RV
-                    </th>
-                  );
-                } else {
-                  return <th key={month}></th>;
-                }
+              {monthsArray.map((month, monthIndex) => {
+                return (
+                  <th key={monthIndex} className={month ? s.vaccine : ""}>
+                    {month}
+                  </th>
+                );
               })}
             </tr>
           );
